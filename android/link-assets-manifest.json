@@ -1,0 +1,41 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/pkmndp.ttf",
+      "sha1": "5f402d2a8a226d3fc8ce5dd9a2cf6f18189d284e"
+    },
+    {
+      "path": "assets/fonts/pkmndpb.ttf",
+      "sha1": "b8822482ea09c091d31b5d335a162b3fb2d5aadc"
+    },
+    {
+      "path": "assets/fonts/pkmnem.ttf",
+      "sha1": "86168ce5695486a62eabeff2c08723520462842b"
+    },
+    {
+      "path": "assets/fonts/pkmnemn.ttf",
+      "sha1": "f47b7faeab4788ce17628a8a3adfbf9401cf1bbf"
+    },
+    {
+      "path": "assets/fonts/pkmnems.ttf",
+      "sha1": "3bf903d2643b77e16144a48c99be97f7f87493ba"
+    },
+    {
+      "path": "assets/fonts/pkmnfl.ttf",
+      "sha1": "4c07b9a3405fcbf8a5e5c01fbdaade26c085810d"
+    },
+    {
+      "path": "assets/fonts/pkmnrs.ttf",
+      "sha1": "0b93ce028bb842878c80ab51c44cba527bfb58c7"
+    },
+    {
+      "path": "assets/fonts/pkmnrsi.ttf",
+      "sha1": "a254b8dba1e8a3c8cde18db9881d53fc947c815f"
+    },
+    {
+      "path": "assets/fonts/PokemonSolidNormal.ttf",
+      "sha1": "604b78675e244487f0efd80662ac5b899353b80e"
+    }
+  ]
+}

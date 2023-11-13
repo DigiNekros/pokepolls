@@ -14,6 +14,15 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-pokepolls2-pokepolls2Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-pokepolls2-pokepolls2Tests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		3E1E70C7BC1B4B36954BCFC7 /* pkmndp.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B1ECB9F1CCC7435ABFE29CB1 /* pkmndp.ttf */; };
+		5F9005FA4D8F4A7D8E2EAC80 /* pkmndpb.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 067C6BD4D4794FEAAFB31855 /* pkmndpb.ttf */; };
+		C75CDDA3F47F418EB6621CAB /* pkmnem.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CA99234140664074A8B375B4 /* pkmnem.ttf */; };
+		2EF64A67C7344EC987494533 /* pkmnemn.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 452DCD0493A24FF9B4CE85F0 /* pkmnemn.ttf */; };
+		52DDA721A7A241E4A359E466 /* pkmnems.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0A6686E9BF6A4C61AFBB1E9B /* pkmnems.ttf */; };
+		E8EC61D1CF2241E18249A5F7 /* pkmnfl.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3680CA646D345678A832EC7 /* pkmnfl.ttf */; };
+		967F031A22934A31AE5BC707 /* pkmnrs.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8FCC58168CA24A498E3ECA64 /* pkmnrs.ttf */; };
+		63799DA2128D40B986ACE8D9 /* pkmnrsi.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A238BB524B964FC688E3AA75 /* pkmnrsi.ttf */; };
+		313FF790A1C443E58274E7AF /* PokemonSolidNormal.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 39AA8E69021F4F05B433B3A1 /* PokemonSolidNormal.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +53,15 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = pokepolls2/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-pokepolls2-pokepolls2Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pokepolls2-pokepolls2Tests.release.xcconfig"; path = "Target Support Files/Pods-pokepolls2-pokepolls2Tests/Pods-pokepolls2-pokepolls2Tests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		B1ECB9F1CCC7435ABFE29CB1 /* pkmndp.ttf */ = {isa = PBXFileReference; name = "pkmndp.ttf"; path = "../assets/fonts/pkmndp.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		067C6BD4D4794FEAAFB31855 /* pkmndpb.ttf */ = {isa = PBXFileReference; name = "pkmndpb.ttf"; path = "../assets/fonts/pkmndpb.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		CA99234140664074A8B375B4 /* pkmnem.ttf */ = {isa = PBXFileReference; name = "pkmnem.ttf"; path = "../assets/fonts/pkmnem.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		452DCD0493A24FF9B4CE85F0 /* pkmnemn.ttf */ = {isa = PBXFileReference; name = "pkmnemn.ttf"; path = "../assets/fonts/pkmnemn.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0A6686E9BF6A4C61AFBB1E9B /* pkmnems.ttf */ = {isa = PBXFileReference; name = "pkmnems.ttf"; path = "../assets/fonts/pkmnems.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A3680CA646D345678A832EC7 /* pkmnfl.ttf */ = {isa = PBXFileReference; name = "pkmnfl.ttf"; path = "../assets/fonts/pkmnfl.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8FCC58168CA24A498E3ECA64 /* pkmnrs.ttf */ = {isa = PBXFileReference; name = "pkmnrs.ttf"; path = "../assets/fonts/pkmnrs.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A238BB524B964FC688E3AA75 /* pkmnrsi.ttf */ = {isa = PBXFileReference; name = "pkmnrsi.ttf"; path = "../assets/fonts/pkmnrsi.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		39AA8E69021F4F05B433B3A1 /* PokemonSolidNormal.ttf */ = {isa = PBXFileReference; name = "PokemonSolidNormal.ttf"; path = "../assets/fonts/PokemonSolidNormal.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +140,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				E0F3159AE78F4495A7B4527D /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -147,6 +166,23 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		E0F3159AE78F4495A7B4527D /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				B1ECB9F1CCC7435ABFE29CB1 /* pkmndp.ttf */,
+				067C6BD4D4794FEAAFB31855 /* pkmndpb.ttf */,
+				CA99234140664074A8B375B4 /* pkmnem.ttf */,
+				452DCD0493A24FF9B4CE85F0 /* pkmnemn.ttf */,
+				0A6686E9BF6A4C61AFBB1E9B /* pkmnems.ttf */,
+				A3680CA646D345678A832EC7 /* pkmnfl.ttf */,
+				8FCC58168CA24A498E3ECA64 /* pkmnrs.ttf */,
+				A238BB524B964FC688E3AA75 /* pkmnrsi.ttf */,
+				39AA8E69021F4F05B433B3A1 /* PokemonSolidNormal.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -244,6 +280,15 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				3E1E70C7BC1B4B36954BCFC7 /* pkmndp.ttf in Resources */,
+				5F9005FA4D8F4A7D8E2EAC80 /* pkmndpb.ttf in Resources */,
+				C75CDDA3F47F418EB6621CAB /* pkmnem.ttf in Resources */,
+				2EF64A67C7344EC987494533 /* pkmnemn.ttf in Resources */,
+				52DDA721A7A241E4A359E466 /* pkmnems.ttf in Resources */,
+				E8EC61D1CF2241E18249A5F7 /* pkmnfl.ttf in Resources */,
+				967F031A22934A31AE5BC707 /* pkmnrs.ttf in Resources */,
+				63799DA2128D40B986ACE8D9 /* pkmnrsi.ttf in Resources */,
+				313FF790A1C443E58274E7AF /* PokemonSolidNormal.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

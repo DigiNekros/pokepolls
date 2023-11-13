@@ -776,20 +776,6 @@ def are_paths_valid():
         if found_platform_tools and found_tools:
             break
 
-    if not found_platform_tools:
-        report('fatal', 'Ensure that {android_sdk_root}{ps}platform-tools is at the top of your {emphasis}path.'.
-            format(android_sdk_root=android_sdk_root,
-                    ps=path_separator,
-                    emphasis='SYSTEM ' if running_on_windows else ''))
-        path_is_good = False
-
-    if not found_tools:
-        report('fatal', 'Ensure that {android_sdk_root}{ps}tools is at the top of your {emphasis}path.'.
-            format(android_sdk_root=android_sdk_root,
-                    ps=path_separator,
-                    emphasis='SYSTEM ' if running_on_windows else ''))
-        path_is_good = False
-
     if path_is_good:
         report('info', 'SDK and JDK paths appear to be good.')
 

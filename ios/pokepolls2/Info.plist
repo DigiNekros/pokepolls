@@ -36,7 +36,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -51,5 +51,17 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>pkmndp.ttf</string>
+		<string>pkmndpb.ttf</string>
+		<string>pkmnem.ttf</string>
+		<string>pkmnemn.ttf</string>
+		<string>pkmnems.ttf</string>
+		<string>pkmnfl.ttf</string>
+		<string>pkmnrs.ttf</string>
+		<string>pkmnrsi.ttf</string>
+		<string>PokemonSolidNormal.ttf</string>
+	</array>
 </dict>
 </plist>
