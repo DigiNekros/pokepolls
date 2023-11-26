@@ -17,6 +17,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Sound} from 'react-native-sound';
 import AppContext from './AppContext'
+import { Section } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
 // PokeAPI: https://pokeapi.co/api/v2/pokemon?limit=1017&offset=0
 const Stack = createNativeStackNavigator();
@@ -57,8 +58,8 @@ const Game = ({navigation}) => {
   const [pokenames, setPokenames] = useState([])
   const [pokeguess, setPokeguess] = useState("")
   const [score, setScore] = useState(0)
-  const [seconds, setSeconds] = useState(0); 
-  const [minutes, setMinutes] = useState(0)
+  const [sec, setSec] = useState(0); 
+  const [min, setMin] = useState(0)
   const [running, setRunning] = useState(true);
   const [gameActive, setGameActive] = useState(true);
   const intervalRef = useRef(null); 
@@ -102,9 +103,9 @@ const Game = ({navigation}) => {
     })
   }
   const startTime = () => {
-    startTimeRef.current = Date.now() - seconds * 1000; 
+    startTimeRef.current = Date.now() - sec * 1000; 
     intervalRef.current = setInterval(() => { 
-      setSeconds(Math.floor((Date.now() -  
+      setSec(Math.floor((Date.now() -  
       startTimeRef.current) / 1000)); 
     }, 1000);
     setRunning(!running)
@@ -113,14 +114,31 @@ const Game = ({navigation}) => {
     clearInterval(intervalRef.current); 
     setRunning(!running); 
   };
+  /*let list = [...context.userList]
+    list.forEach(t => {
+      if (t.username == context.username && t.pokemon < score) {
+        context.setUserList(context.userList.filter((t) => t.username !== context.username))
+        const arr = [...list, {username: context.username, pokemon: score, minutes: min, seconds: sec}]
+        context.setUserList(arr)
+      }
+    }) */
+  const replaceEntry = () => {
+    const new_list = context.userList.map(t => {
+      if (t.username == context.username && t.pokemon < score) {
+        return {...context.userList, username: context.username, pokemon: score, minutes: min, seconds: sec}
+      }
+      return context.userList
+    })
+    context.setUserList(new_list)
+  }
   const giveUp = () => {
     stopTime()
-    context.setUserList([...context.userList, {username: context.username, pokemon: score, minutes: minutes, seconds: seconds}])
+    replaceEntry()
     setGameActive(!gameActive);
   }
   useEffect(() => {
     if (gameActive == false) {
-      Alert.alert("Well done!", "You answered " + score + " Pokemon in " + minutes + " min " + seconds + " s!", [{text: "OK", onPress: () => navigation.goBack()}])
+      Alert.alert("Well done, " + context.username + "!", "You answered " + score + " Pokemon in " + min + " min " + sec + " s!", [{text: "OK", onPress: () => navigation.goBack()}])
     }
   });
   return (
@@ -150,7 +168,7 @@ const Game = ({navigation}) => {
           </SafeAreaView>
           <SafeAreaView style = {game.scoreBox}>
             <Text style = {game.scoreText}>Score: {score}</Text>
-            <Text style = {game.scoreText}>{seconds < 60 ? "Time: " + seconds + "s" : "Time: " + minutes + "min " + seconds + "s"}</Text>
+            <Text style = {game.scoreText}>{sec < 60 ? "Time: " + sec + "s" : "Time: " + min + "min " + sec + "s"}</Text>
           </SafeAreaView>
           <SafeAreaView style = {{flexDirection: "row", alignSelf: "center", top: 25,}}>
             {running == true ? (
@@ -177,8 +195,7 @@ const Game = ({navigation}) => {
 const Username = ({navigation}) => {
   const context = React.useContext(AppContext);
   const createEntry = (username) => {
-    context.setUserList([...context.userList, {username: JSON.stringify(username), pokemon: 0, minutes: 0, seconds: 0}])
-    context.setUsername("")
+    context.setUserList([...context.userList, {username: username, pokemon: 0, minutes: 0, seconds: 0}])
   }
   return (
     <SafeAreaProvider style = {style.root}>
@@ -210,7 +227,6 @@ const Username = ({navigation}) => {
   )
 }
 
-// currently not operational
 const Leaderboard = ({navigation}) => {
   const context = React.useContext(AppContext);
   return (
