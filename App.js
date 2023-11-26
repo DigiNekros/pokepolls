@@ -24,7 +24,6 @@ const Stack = createNativeStackNavigator();
 const bgImage = {uri: 'https://purepng.com/public/uploads/large/purepng.com-pokeballpokeballdevicepokemon-ballpokemon-capture-ball-17015278258617bdog.png'}
 /* BIG TO-DOS
 - NATIVE FUNCTION: implement Sounds native function, play background music while using the app
-- GAME END: AFTER A GAME, UPDATE THE BEST SCORE/TIME TO THE USER CURRENTLY PLAYING
 */
 const Home = ({navigation}) => {
   const context = React.useContext(AppContext);
