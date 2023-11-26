@@ -58,7 +58,7 @@ const Game = ({navigation}) => {
   const [pokenames, setPokenames] = useState([])
   const [pokeguess, setPokeguess] = useState("")
   const [score, setScore] = useState(0)
-  const [sec, setSec] = useState(0); 
+  const [sec,setSec] = useState(0);
   const [min, setMin] = useState(0)
   const [running, setRunning] = useState(true);
   const [gameActive, setGameActive] = useState(true);
@@ -103,10 +103,10 @@ const Game = ({navigation}) => {
     })
   }
   const startTime = () => {
-    startTimeRef.current = Date.now() - sec * 1000; 
-    intervalRef.current = setInterval(() => { 
-      setSec(Math.floor((Date.now() -  
-      startTimeRef.current) / 1000)); 
+    startTimeRef.current=Date.now()-sec*1000;
+    intervalRef.current = setInterval(() => {
+      setSec(Math.floor((Date.now()-
+      startTimeRef.current) / 1000));
     }, 1000);
     setRunning(!running)
   };
@@ -114,14 +114,6 @@ const Game = ({navigation}) => {
     clearInterval(intervalRef.current); 
     setRunning(!running); 
   };
-  /*let list = [...context.userList]
-    list.forEach(t => {
-      if (t.username == context.username && t.pokemon < score) {
-        context.setUserList(context.userList.filter((t) => t.username !== context.username))
-        const arr = [...list, {username: context.username, pokemon: score, minutes: min, seconds: sec}]
-        context.setUserList(arr)
-      }
-    }) */
   const replaceEntry = () => {
     const new_list = context.userList.map(t => {
       if (t.username == context.username && t.pokemon < score) {
