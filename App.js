@@ -15,7 +15,7 @@ import 'react-native-paper'
 import { CurrentRenderContext, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {Sound} from 'react-native-sound';
+import Sound from 'react-native-sound';
 import AppContext from './AppContext'
 import { Section } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
@@ -23,12 +23,25 @@ import { Section } from 'react-native-paper/lib/typescript/components/Drawer/Dra
 const Stack = createNativeStackNavigator();
 const bgImage = {uri: 'https://purepng.com/public/uploads/large/purepng.com-pokeballpokeballdevicepokemon-ballpokemon-capture-ball-17015278258617bdog.png'}
 /* BIG TO-DOS
-- NATIVE FUNCTION: implement Sounds native function, play background music while using the app
+- UPDATE ENTRIES: update when they have the same number of pokemon but a faster time
 */
 const Home = ({navigation}) => {
   const context = React.useContext(AppContext);
+  const bgMusic = () => {
+    const music = new Sound('home_theme.wav', Sound.MAIN_BUNDLE, (err) => {
+      if (err) {
+        console.log("Can't play music.")
+      }
+    })
+    setTimeout(() => {
+      music.play();
+      music.setNumberOfLoops(-1);
+    });
+    music.release();
+  }
   return (
     <SafeAreaProvider style = {style.root}>
+      {bgMusic()}
       <SafeAreaView style = {style.hmImage}>
         <ImageBackground source={bgImage} resizeMode="cover" style={style.hmImage}>
           <Text style = {style.title}>PokePolls!</Text>
@@ -121,6 +134,7 @@ const Game = ({navigation}) => {
       return context.userList
     })
     context.setUserList(new_list)
+    context.setUsername(context.username)
   }
   const giveUp = () => {
     stopTime()
@@ -186,7 +200,7 @@ const Game = ({navigation}) => {
 const Username = ({navigation}) => {
   const context = React.useContext(AppContext);
   const createEntry = (username) => {
-    context.setUserList([...context.userList, {username: username, pokemon: 0, minutes: 0, seconds: 0}])
+    context.setUserList([...context.userList, {username: JSON.stringify(username), pokemon: 0, minutes: 0, seconds: 0}])
   }
   return (
     <SafeAreaProvider style = {style.root}>
