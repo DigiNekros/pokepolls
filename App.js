@@ -18,14 +18,12 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Sound} from 'react-native-sound';
 import AppContext from './AppContext'
 
-//PokeAPI: https://pokeapi.co/api/v2/pokemon?limit=1017&offset=0
+// PokeAPI: https://pokeapi.co/api/v2/pokemon?limit=1017&offset=0
 const Stack = createNativeStackNavigator();
 const bgImage = {uri: 'https://purepng.com/public/uploads/large/purepng.com-pokeballpokeballdevicepokemon-ballpokemon-capture-ball-17015278258617bdog.png'}
 /* BIG TO-DOS
-- NATIVE FUNCTION: implement Sounds native function, the sprite cry plays when you guess a correct pokemon corresponding to the pokemon
-- CHECK FOR CORRECT ANSWER - correct answer is there, but player can repeat the same answer and still get a point
-- LEADERBOARD: make the leaderboard function
-- USERNAME TO LEADERBOARD - the username entered is not creating a leaderboard entry for some reason
+- NATIVE FUNCTION: implement Sounds native function, play background music while using the app
+- GAME END: AFTER A GAME, UPDATE THE BEST SCORE/TIME TO THE USER CURRENTLY PLAYING
 */
 const Home = ({navigation}) => {
   const context = React.useContext(AppContext);
@@ -92,14 +90,12 @@ const Game = ({navigation}) => {
       if (a.name === guess.toLowerCase()) {
         guessList.forEach(b => {
           if (b.name === guess.toLowerCase() || b.name === "empty" && score > 0) {
-            console.log("You already have it")
             return;
           }
           else {
             setScore(score+1)
             setGuessList([...guessList, {name: guess}])
             setPokeguess('')
-            console.log("yes")
           }
         })
       }
@@ -119,6 +115,7 @@ const Game = ({navigation}) => {
   };
   const giveUp = () => {
     stopTime()
+    context.setUserList([...context.userList, {username: context.username, pokemon: score, minutes: minutes, seconds: seconds}])
     setGameActive(!gameActive);
   }
   useEffect(() => {
@@ -179,11 +176,9 @@ const Game = ({navigation}) => {
 
 const Username = ({navigation}) => {
   const context = React.useContext(AppContext);
-  const [username, setUsername] = useState(null)
   const createEntry = (username) => {
-    context.setUserList([...context.userList, {name: username, pokemon: 0, time: 0}])
-    console.log("it worked")
-    setUsername("")
+    context.setUserList([...context.userList, {username: JSON.stringify(username), pokemon: 0, minutes: 0, seconds: 0}])
+    context.setUsername("")
   }
   return (
     <SafeAreaProvider style = {style.root}>
@@ -192,14 +187,14 @@ const Username = ({navigation}) => {
           <SafeAreaView style = {un.unTIBox}>
             <TextInput
               style = {un.unTIText}
-              onChange = {setUsername}
-              value = {username}
+              onChange = {context.setUsername}
+              value = {context.username}
               placeholder = "What is your name?"
             ></TextInput>
           </SafeAreaView>
           <SafeAreaView style = {{flexDirection: "row", alignSelf: "center", top: 25,}}>
             <SafeAreaView style = {un.unSUNBox}>
-              <TouchableOpacity onPress = {() => createEntry(username)}>
+              <TouchableOpacity onPress = {() => createEntry(context.username)}>
                 <Text style = {un.unSUNText}>Submit</Text>
               </TouchableOpacity>
             </SafeAreaView>
@@ -222,18 +217,17 @@ const Leaderboard = ({navigation}) => {
     <SafeAreaProvider style = {style.root}>
       <SafeAreaView style = {style.hmImage}>
         <ImageBackground source={bgImage} resizeMode="cover" style={style.hmImage}>
-          <SafeAreaView>
-            <Text style = {{alignSelf: "center"}}>
-            <FlatList
+          <SafeAreaView style = {{alignSelf: "center"}}>
+          <FlatList
+              style = {{alignSelf: 'center'}}
               data={context.userList}
               renderItem={({item}) =>
-                <SafeAreaView>
-                  <Text style = {{color: 'black', fontSize: 30}}>Here I am!</Text>
-                  <Text style = {{color: 'black', fontSize: 30}}>{item.name}</Text>
+                <SafeAreaView style = {leaderboard.entryBox}>
+                  <Text style = {leaderboard.entryText}>{item.username}: {item.pokemon} pokemon guessed</Text>
+                  <Text style = {leaderboard.entryText}>Record: {item.minutes} minutes {item.seconds} seconds</Text>
                 </SafeAreaView>
               }
             ></FlatList>
-            </Text>
           </SafeAreaView>
         </ImageBackground>
       </SafeAreaView>
@@ -261,6 +255,7 @@ const Credits = ({navigation}) => {
 
 const App = () => {
   const [pokenames, setPokenames] = useState([])
+  const [username, setUsername] = useState("Trainer")
   const [userList, setUserList] = useState([])
   // test function to find api
   const FetchDataComponent = () => {
@@ -307,6 +302,8 @@ const App = () => {
   const contextVal = {
     userList,
     setUserList,
+    username,
+    setUsername,
     pokenames,
     setPokenames,
     FetchDataComponent
@@ -498,7 +495,7 @@ const credits = StyleSheet.create ({
 const un = StyleSheet.create({
   unTIBox: {
     backgroundColor:'#BDC2C4',
-    width: 200,
+    width: 250,
     height: 100,
     borderRadius: 5,
     borderColor: 'black',
@@ -507,7 +504,7 @@ const un = StyleSheet.create({
   },
   unTIText: {
     fontFamily: 'pkmndp',
-    fontSize: 20,
+    fontSize: 30,
     textAlign: 'center',
     color: 'black',
   },
@@ -523,7 +520,7 @@ const un = StyleSheet.create({
   },
   unSUNText: {
     fontFamily: 'pkmndp',
-    fontSize: 20,
+    fontSize: 30,
     textAlign: 'center',
     color: 'black',
   },
@@ -539,23 +536,24 @@ const un = StyleSheet.create({
   },
   unBTMText: {
     fontFamily: 'pkmndp',
-    fontSize: 20,
+    fontSize: 30,
     textAlign: 'center',
     color: 'black',
   },
 })
 
 const leaderboard = StyleSheet.create({
-  tempBox: {
+  entryBox: {
     backgroundColor:'#BDC2C4',
-    width: 200,
+    width: 350,
     height: 100,
     borderRadius: 5,
     borderColor: 'black',
     justifyContent: 'center',
     alignSelf: 'center',
+    marginTop: 25
   },
-  tempText: {
+  entryText: {
     fontFamily: 'pkmndp',
     fontSize: 30,
     textAlign: 'center',
