@@ -15,16 +15,17 @@ import 'react-native-paper'
 import { CurrentRenderContext, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {Sound} from 'react-native-sound';
 import AppContext from './AppContext'
 
 //PokeAPI: https://pokeapi.co/api/v2/pokemon?limit=1017&offset=0
 const Stack = createNativeStackNavigator();
 const bgImage = {uri: 'https://purepng.com/public/uploads/large/purepng.com-pokeballpokeballdevicepokemon-ballpokemon-capture-ball-17015278258617bdog.png'}
 /* BIG TO-DOS
-- FIX MAJOR FUNCTION OF GAME: game will not iterate through forEach loop for some reason.
-- NATIVE FUNCTION: implement some sort of native function with the game
-- USERNAME: make the username function
+- NATIVE FUNCTION: implement Sounds native function, the sprite cry plays when you guess a correct pokemon corresponding to the pokemon
+- CHECK FOR CORRECT ANSWER - correct answer is there, but player can repeat the same answer and still get a point
 - LEADERBOARD: make the leaderboard function
+- USERNAME TO LEADERBOARD - the username entered is not creating a leaderboard entry for some reason
 */
 const Home = ({navigation}) => {
   const context = React.useContext(AppContext);
@@ -54,31 +55,62 @@ const Home = ({navigation}) => {
 
 const Game = ({navigation}) => {
   const context = React.useContext(AppContext);
-  const [guessList, setGuessList] = useState([])
+  const [guessList, setGuessList] = useState([{name: "empty"}])
+  const [pokenames, setPokenames] = useState([])
   const [pokeguess, setPokeguess] = useState("")
   const [score, setScore] = useState(0)
-  const [time, setTime] = useState(0); 
+  const [seconds, setSeconds] = useState(0); 
+  const [minutes, setMinutes] = useState(0)
   const [running, setRunning] = useState(true);
   const [gameActive, setGameActive] = useState(true);
   const intervalRef = useRef(null); 
   const startTimeRef = useRef(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);  
+  
+  // useEffect hook to call api
+  useEffect(() => {
+    fetch('https://pokeapi.co/api/v2/pokemon?limit=1017&offset=0')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setPokenames([...data.results, {name: data.name, url: data.url, recorded: false}])
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error);
+        setLoading(false);
+      });
+  }, []);
   const checkGuess = (guess) => {
-    let answers = [...context.pokenames];
-    answers.forEach(a =>  {
-      if (a.name === guess) {
-        setScore(score+1)
-        setGuessList([...guessList, {name: guess}])
+    let answers = [...pokenames];
+    answers.forEach(a=> {
+      if (a.name === guess.toLowerCase()) {
+        guessList.forEach(b => {
+          if (b.name === guess.toLowerCase() || b.name === "empty" && score > 0) {
+            console.log("You already have it")
+            return;
+          }
+          else {
+            setScore(score+1)
+            setGuessList([...guessList, {name: guess}])
+            setPokeguess('')
+            console.log("yes")
+          }
+        })
       }
     })
-    setScore(score+1)
-    setGuessList([...guessList, {name: guess}])
   }
-  const startTime = () => { 
-    startTimeRef.current = Date.now() - time * 1000; 
+  const startTime = () => {
+    startTimeRef.current = Date.now() - seconds * 1000; 
     intervalRef.current = setInterval(() => { 
-        setTime(Math.floor((Date.now() -  
-        startTimeRef.current) / 1000)); 
-    }, 1000); 
+      setSeconds(Math.floor((Date.now() -  
+      startTimeRef.current) / 1000)); 
+    }, 1000);
     setRunning(!running)
   };
   const stopTime = () => { 
@@ -86,11 +118,12 @@ const Game = ({navigation}) => {
     setRunning(!running); 
   };
   const giveUp = () => {
+    stopTime()
     setGameActive(!gameActive);
   }
   useEffect(() => {
     if (gameActive == false) {
-      Alert.alert("Well done!", "You answered " + score + " Pokemon in " + time + " seconds!", [{text: "OK", onPress: () => navigation.goBack()}])
+      Alert.alert("Well done!", "You answered " + score + " Pokemon in " + minutes + " min " + seconds + " s!", [{text: "OK", onPress: () => navigation.goBack()}])
     }
   });
   return (
@@ -109,9 +142,10 @@ const Game = ({navigation}) => {
           <SafeAreaView style = {game.PABox}>
             <Text style = {game.PATitle}>Past Answers</Text>
             <FlatList
+            inverted
             data={guessList}
             renderItem={({ item }) => (
-              <Text style = {game.PAEntry}>{item.name}</Text>
+              <Text style = {game.PAEntry}>{item.name === "empty" ? "" : item.name}</Text>
             )}
             style = {game.PAEntry}
             keyExtractor={(item, index) => index.toString()}
@@ -119,7 +153,7 @@ const Game = ({navigation}) => {
           </SafeAreaView>
           <SafeAreaView style = {game.scoreBox}>
             <Text style = {game.scoreText}>Score: {score}</Text>
-            <Text style = {game.scoreText}>Time: {time}s</Text>
+            <Text style = {game.scoreText}>{seconds < 60 ? "Time: " + seconds + "s" : "Time: " + minutes + "min " + seconds + "s"}</Text>
           </SafeAreaView>
           <SafeAreaView style = {{flexDirection: "row", alignSelf: "center", top: 25,}}>
             {running == true ? (
@@ -145,12 +179,35 @@ const Game = ({navigation}) => {
 
 const Username = ({navigation}) => {
   const context = React.useContext(AppContext);
+  const [username, setUsername] = useState(null)
+  const createEntry = (username) => {
+    context.setUserList([...context.userList, {name: username, pokemon: 0, time: 0}])
+    console.log("it worked")
+    setUsername("")
+  }
   return (
     <SafeAreaProvider style = {style.root}>
       <SafeAreaView style = {style.hmImage}>
         <ImageBackground source={bgImage} resizeMode="cover" style={style.hmImage}>
-          <SafeAreaView style = {temp.tempBox}>
-            <Text style = {temp.tempText}>In progress! Please wait until the next update.</Text>
+          <SafeAreaView style = {un.unTIBox}>
+            <TextInput
+              style = {un.unTIText}
+              onChange = {setUsername}
+              value = {username}
+              placeholder = "What is your name?"
+            ></TextInput>
+          </SafeAreaView>
+          <SafeAreaView style = {{flexDirection: "row", alignSelf: "center", top: 25,}}>
+            <SafeAreaView style = {un.unSUNBox}>
+              <TouchableOpacity onPress = {() => createEntry(username)}>
+                <Text style = {un.unSUNText}>Submit</Text>
+              </TouchableOpacity>
+            </SafeAreaView>
+            <SafeAreaView style = {un.unBTMBox}>
+              <TouchableOpacity onPress = {() => navigation.goBack()}>
+                <Text style = {un.unBTMText}>Back To Menu</Text>
+              </TouchableOpacity>
+            </SafeAreaView>
           </SafeAreaView>
         </ImageBackground>
       </SafeAreaView>
@@ -158,14 +215,25 @@ const Username = ({navigation}) => {
   )
 }
 
+// currently not operational
 const Leaderboard = ({navigation}) => {
   const context = React.useContext(AppContext);
   return (
     <SafeAreaProvider style = {style.root}>
       <SafeAreaView style = {style.hmImage}>
         <ImageBackground source={bgImage} resizeMode="cover" style={style.hmImage}>
-          <SafeAreaView style = {temp.tempBox}>
-            <Text style = {temp.tempText}>In progress! Please wait until the next update.</Text>
+          <SafeAreaView>
+            <Text style = {{alignSelf: "center"}}>
+            <FlatList
+              data={context.userList}
+              renderItem={({item}) =>
+                <SafeAreaView>
+                  <Text style = {{color: 'black', fontSize: 30}}>Here I am!</Text>
+                  <Text style = {{color: 'black', fontSize: 30}}>{item.name}</Text>
+                </SafeAreaView>
+              }
+            ></FlatList>
+            </Text>
           </SafeAreaView>
         </ImageBackground>
       </SafeAreaView>
@@ -192,8 +260,9 @@ const Credits = ({navigation}) => {
 }
 
 const App = () => {
-  const [username, setUsername] = useState('')
   const [pokenames, setPokenames] = useState([])
+  const [userList, setUserList] = useState([])
+  // test function to find api
   const FetchDataComponent = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);  
@@ -206,7 +275,7 @@ const App = () => {
           return response.json();
         })
         .then((data) => {
-          context.setPokenames([...data.results, {name: data.name, url: data.url, recorded: false}])
+          setPokenames([...data.results, {name: data.name, url: data.url, recorded: false}])
           setLoading(false);
         })
         .catch((error) => {
@@ -215,9 +284,9 @@ const App = () => {
         });
     }, []);
   
-    if (loading) {
-      return <ActivityIndicator size="large" color="#0000ff" />;
-    }
+    //if (loading) {
+    //  return <ActivityIndicator size="large" color="#0000ff" />;
+    //}
   
     if (error) {
       return <Text>Error: {error.message}</Text>;
@@ -225,7 +294,7 @@ const App = () => {
     return (
       <SafeAreaView>
         <FlatList
-            data={context.pokenames}
+            data={pokenames}
             renderItem={({ item }) => (
               <Text style = {game.PAEntry}>{item.name}</Text>
             )}
@@ -236,8 +305,8 @@ const App = () => {
     );
   }
   const contextVal = {
-    username,
-    setUsername,
+    userList,
+    setUserList,
     pokenames,
     setPokenames,
     FetchDataComponent
@@ -426,7 +495,57 @@ const credits = StyleSheet.create ({
   credits2: {fontFamily: 'pkmnrs', fontSize: 30, color: 'black', textAlign: 'center'}
 })
 
-const temp = StyleSheet.create({
+const un = StyleSheet.create({
+  unTIBox: {
+    backgroundColor:'#BDC2C4',
+    width: 200,
+    height: 100,
+    borderRadius: 5,
+    borderColor: 'black',
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  unTIText: {
+    fontFamily: 'pkmndp',
+    fontSize: 20,
+    textAlign: 'center',
+    color: 'black',
+  },
+  unSUNBox: {
+    backgroundColor:'#BDC2C4',
+    width: 150,
+    height: 75,
+    borderRadius: 5,
+    borderColor: 'black',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    right: 20,
+  },
+  unSUNText: {
+    fontFamily: 'pkmndp',
+    fontSize: 20,
+    textAlign: 'center',
+    color: 'black',
+  },
+  unBTMBox: {
+    backgroundColor:'#BDC2C4',
+    width: 150,
+    height: 75,
+    borderRadius: 5,
+    borderColor: 'black',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    left: 20
+  },
+  unBTMText: {
+    fontFamily: 'pkmndp',
+    fontSize: 20,
+    textAlign: 'center',
+    color: 'black',
+  },
+})
+
+const leaderboard = StyleSheet.create({
   tempBox: {
     backgroundColor:'#BDC2C4',
     width: 200,

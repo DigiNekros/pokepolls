@@ -23,6 +23,8 @@
 		967F031A22934A31AE5BC707 /* pkmnrs.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8FCC58168CA24A498E3ECA64 /* pkmnrs.ttf */; };
 		63799DA2128D40B986ACE8D9 /* pkmnrsi.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A238BB524B964FC688E3AA75 /* pkmnrsi.ttf */; };
 		313FF790A1C443E58274E7AF /* PokemonSolidNormal.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 39AA8E69021F4F05B433B3A1 /* PokemonSolidNormal.ttf */; };
+		B64A2F58E4FA45A4BDE8B5B9 /* 001 - Bulbasaur.wav in Resources */ = {isa = PBXBuildFile; fileRef = 576341DC9C3348479A299AC6 /* 001 - Bulbasaur.wav */; };
+		4D716B0BC48E4556B8FBB72E /* home_theme.wav in Resources */ = {isa = PBXBuildFile; fileRef = 97B0761AC31D4AF2823A87E1 /* home_theme.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +64,8 @@
 		8FCC58168CA24A498E3ECA64 /* pkmnrs.ttf */ = {isa = PBXFileReference; name = "pkmnrs.ttf"; path = "../assets/fonts/pkmnrs.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		A238BB524B964FC688E3AA75 /* pkmnrsi.ttf */ = {isa = PBXFileReference; name = "pkmnrsi.ttf"; path = "../assets/fonts/pkmnrsi.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		39AA8E69021F4F05B433B3A1 /* PokemonSolidNormal.ttf */ = {isa = PBXFileReference; name = "PokemonSolidNormal.ttf"; path = "../assets/fonts/PokemonSolidNormal.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		576341DC9C3348479A299AC6 /* 001 - Bulbasaur.wav */ = {isa = PBXFileReference; name = "001 - Bulbasaur.wav"; path = "../assets/audio/001 - Bulbasaur.wav"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		97B0761AC31D4AF2823A87E1 /* home_theme.wav */ = {isa = PBXFileReference; name = "home_theme.wav"; path = "../assets/audio/home_theme.wav"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +183,8 @@
 				8FCC58168CA24A498E3ECA64 /* pkmnrs.ttf */,
 				A238BB524B964FC688E3AA75 /* pkmnrsi.ttf */,
 				39AA8E69021F4F05B433B3A1 /* PokemonSolidNormal.ttf */,
+				576341DC9C3348479A299AC6 /* 001 - Bulbasaur.wav */,
+				97B0761AC31D4AF2823A87E1 /* home_theme.wav */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -289,6 +295,8 @@
 				967F031A22934A31AE5BC707 /* pkmnrs.ttf in Resources */,
 				63799DA2128D40B986ACE8D9 /* pkmnrsi.ttf in Resources */,
 				313FF790A1C443E58274E7AF /* PokemonSolidNormal.ttf in Resources */,
+				B64A2F58E4FA45A4BDE8B5B9 /* 001 - Bulbasaur.wav in Resources */,
+				4D716B0BC48E4556B8FBB72E /* home_theme.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

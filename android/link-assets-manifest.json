@@ -36,6 +36,14 @@
     {
       "path": "assets/fonts/PokemonSolidNormal.ttf",
       "sha1": "604b78675e244487f0efd80662ac5b899353b80e"
+    },
+    {
+      "path": "assets/audio/001 - Bulbasaur.wav",
+      "sha1": "5d1c2468d14fe9c4e0e9fe2b8302fbab38461590"
+    },
+    {
+      "path": "assets/audio/home_theme.wav",
+      "sha1": "b84d25f398824698b58c8bad1be6a2e2c3367ac0"
     }
   ]
 }
