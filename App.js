@@ -327,6 +327,8 @@ const App = () => {
       music.play();
       music.setNumberOfLoops(-1);
     });
+
+    music.release();
   }
   return (
     <AppContext.Provider value = {contextVal}>   
