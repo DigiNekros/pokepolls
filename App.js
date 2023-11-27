@@ -22,26 +22,10 @@ import { Section } from 'react-native-paper/lib/typescript/components/Drawer/Dra
 // PokeAPI: https://pokeapi.co/api/v2/pokemon?limit=1017&offset=0
 const Stack = createNativeStackNavigator();
 const bgImage = {uri: 'https://purepng.com/public/uploads/large/purepng.com-pokeballpokeballdevicepokemon-ballpokemon-capture-ball-17015278258617bdog.png'}
-/* BIG TO-DOS
-- UPDATE ENTRIES: update when they have the same number of pokemon but a faster time
-*/
 const Home = ({navigation}) => {
   const context = React.useContext(AppContext);
-  const bgMusic = () => {
-    const music = new Sound('home_theme.wav', Sound.MAIN_BUNDLE, (err) => {
-      if (err) {
-        console.log("Can't play music.")
-      }
-    })
-    setTimeout(() => {
-      music.play();
-      music.setNumberOfLoops(-1);
-    });
-    music.release();
-  }
   return (
     <SafeAreaProvider style = {style.root}>
-      {bgMusic()}
       <SafeAreaView style = {style.hmImage}>
         <ImageBackground source={bgImage} resizeMode="cover" style={style.hmImage}>
           <Text style = {style.title}>PokePolls!</Text>
@@ -71,7 +55,7 @@ const Game = ({navigation}) => {
   const [pokeguess, setPokeguess] = useState("")
   const [score, setScore] = useState(0)
   const [sec,setSec] = useState(0);
-  const [min, setMin] = useState(0)
+  const [index, setIndex] = useState(0);
   const [running, setRunning] = useState(true);
   const [gameActive, setGameActive] = useState(true);
   const intervalRef = useRef(null); 
@@ -102,12 +86,16 @@ const Game = ({navigation}) => {
     answers.forEach(a=> {
       if (a.name === guess.toLowerCase()) {
         guessList.forEach(b => {
-          if (b.name === guess.toLowerCase() || b.name === "empty" && score > 0) {
+          if ((b.name === "empty" && score > 0) || (b.name === guess.toLowerCase() && b.recorded == true)) {
+            setIndex(index+1);
+            if (index > 1) {
+              return;
+            }
             return;
           }
           else {
             setScore(score+1)
-            setGuessList([...guessList, {name: guess}])
+            setGuessList([...guessList, {name: guess, url: pokenames.url, recorded: !a.recorded}])
             setPokeguess('')
           }
         })
@@ -128,10 +116,10 @@ const Game = ({navigation}) => {
   };
   const replaceEntry = () => {
     const new_list = context.userList.map(t => {
-      if (t.username == context.username && t.pokemon < score) {
-        return {...context.userList, username: context.username, pokemon: score, minutes: min, seconds: sec}
+      if (t.username === context.username && t.pokemon < score) {
+        return {...context.userList, username: context.username, pokemon: score, seconds: sec}
       }
-      return context.userList
+      return t
     })
     context.setUserList(new_list)
     context.setUsername(context.username)
@@ -143,19 +131,24 @@ const Game = ({navigation}) => {
   }
   useEffect(() => {
     if (gameActive == false) {
-      Alert.alert("Well done, " + context.username + "!", "You answered " + score + " Pokemon in " + min + " min " + sec + " s!", [{text: "OK", onPress: () => navigation.goBack()}])
+      Alert.alert("Well done, " + context.username + "!", "You answered " + score + " Pokemon in " + sec + " s!", [{text: "OK", onPress: () => navigation.goBack()}])
     }
   });
   return (
     <SafeAreaProvider style = {style.root}>
       <SafeAreaView style = {style.hmImage}>
         <ImageBackground source={bgImage} resizeMode="cover" style={style.hmImage}>
+          {running == false ? 
           <TextInput
             style = {game.TIBox}
             onChangeText={setPokeguess}
             value={pokeguess}
             placeholder="Enter your guess here"
-          ></TextInput>
+          ></TextInput> :
+          <SafeAreaView style = {game.gameOffBox}>
+            <Text style = {game.gameOffText}>Press Start to play</Text>
+          </SafeAreaView>
+          }
           <TouchableOpacity style = {game.submitBox} onPress = {() => checkGuess(pokeguess)}>
             <Text style = {game.submitText}>Submit</Text>
           </TouchableOpacity>
@@ -173,7 +166,7 @@ const Game = ({navigation}) => {
           </SafeAreaView>
           <SafeAreaView style = {game.scoreBox}>
             <Text style = {game.scoreText}>Score: {score}</Text>
-            <Text style = {game.scoreText}>{sec < 60 ? "Time: " + sec + "s" : "Time: " + min + "min " + sec + "s"}</Text>
+            <Text style = {game.scoreText}>Time: {sec}s</Text>
           </SafeAreaView>
           <SafeAreaView style = {{flexDirection: "row", alignSelf: "center", top: 25,}}>
             {running == true ? (
@@ -200,7 +193,7 @@ const Game = ({navigation}) => {
 const Username = ({navigation}) => {
   const context = React.useContext(AppContext);
   const createEntry = (username) => {
-    context.setUserList([...context.userList, {username: JSON.stringify(username), pokemon: 0, minutes: 0, seconds: 0}])
+    context.setUserList([...context.userList, {username: username, pokemon: 0, seconds: 0}])
   }
   return (
     <SafeAreaProvider style = {style.root}>
@@ -209,7 +202,7 @@ const Username = ({navigation}) => {
           <SafeAreaView style = {un.unTIBox}>
             <TextInput
               style = {un.unTIText}
-              onChange = {context.setUsername}
+              onChangeText = {context.setUsername}
               value = {context.username}
               placeholder = "What is your name?"
             ></TextInput>
@@ -245,7 +238,7 @@ const Leaderboard = ({navigation}) => {
               renderItem={({item}) =>
                 <SafeAreaView style = {leaderboard.entryBox}>
                   <Text style = {leaderboard.entryText}>{item.username}: {item.pokemon} pokemon guessed</Text>
-                  <Text style = {leaderboard.entryText}>Record: {item.minutes} minutes {item.seconds} seconds</Text>
+                  <Text style = {leaderboard.entryText}>Record: {item.seconds} seconds</Text>
                 </SafeAreaView>
               }
             ></FlatList>
@@ -276,7 +269,7 @@ const Credits = ({navigation}) => {
 
 const App = () => {
   const [pokenames, setPokenames] = useState([])
-  const [username, setUsername] = useState("Trainer")
+  const [username, setUsername] = useState("")
   const [userList, setUserList] = useState([])
   // test function to find api
   const FetchDataComponent = () => {
@@ -299,11 +292,6 @@ const App = () => {
           setLoading(false);
         });
     }, []);
-  
-    //if (loading) {
-    //  return <ActivityIndicator size="large" color="#0000ff" />;
-    //}
-  
     if (error) {
       return <Text>Error: {error.message}</Text>;
     }
@@ -327,10 +315,22 @@ const App = () => {
     setUsername,
     pokenames,
     setPokenames,
-    FetchDataComponent
+    FetchDataComponent,
+  }
+  const bgMusic = () => {
+    const music = new Sound('home_theme.wav', Sound.MAIN_BUNDLE, (err) => {
+      if (err) {
+        console.log("Can't play music.")
+      }
+    })
+    setTimeout(() => {
+      music.play();
+      music.setNumberOfLoops(-1);
+    });
   }
   return (
-    <AppContext.Provider value = {contextVal}>
+    <AppContext.Provider value = {contextVal}>   
+    {bgMusic()}
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Home'>
         <Stack.Screen name = "Home" component = {Home}></Stack.Screen>
@@ -389,6 +389,24 @@ const style = StyleSheet.create ({
 })
 
 const game = StyleSheet.create ({
+  gameOffBox: {
+    backgroundColor:'#BDC2C4',
+    width: 300,
+    height: 55,
+    fontSize: 30,
+    color: 'black',
+    alignSelf: 'center',
+    textAlign: 'center',
+    fontFamily: 'pkmnrs',
+    borderRadius: 5,
+    bottom: 75},
+  gameOffText: {
+    fontFamily: 'pkmndp',
+    fontSize: 30,
+    textAlign: 'center',
+    color: 'black',
+    top: 10,
+  },
   TIBox: {
     backgroundColor:'#BDC2C4',
     width: 300,
@@ -404,7 +422,7 @@ const game = StyleSheet.create ({
   PABox: {
     backgroundColor:'#BDC2C4',
     width: 300,
-    height: 100,
+    height: 300,
     borderRadius: 10,
     borderColor: 'black',
     justifyContent: 'center',
@@ -491,8 +509,8 @@ const game = StyleSheet.create ({
 const credits = StyleSheet.create ({
   box1: {
     backgroundColor:'#BDC2C4',
-    width: 300,
-    height: 110,
+    width: 350,
+    height: 120,
     borderRadius: 10,
     borderColor: 'black',
     justifyContent: 'center',
@@ -501,8 +519,8 @@ const credits = StyleSheet.create ({
   },
   box2: {
     backgroundColor:'#BDC2C4',
-    width: 300,
-    height: 100,
+    width: 350,
+    height: 120,
     borderRadius: 10,
     borderColor: 'black',
     justifyContent: 'center',
