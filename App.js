@@ -313,7 +313,6 @@ const App = () => {
   const [pokenames, setPokenames] = useState([])
   const [username, setUsername] = useState("")
   const [userList, setUserList] = useState([])
-  const [bgm, setBGM] = useState(null)
   // test function to find api
   const FetchDataComponent = () => {
     const [loading, setLoading] = useState(true);
@@ -361,28 +360,30 @@ const App = () => {
     FetchDataComponent,
   }
   useEffect(() => {
-    const sound = new SoundPlayer('home_theme.wav', SoundPlayer.MAIN_BUNDLE, (error) => {
+    const bgm = new SoundPlayer('home_theme.wav', SoundPlayer.MAIN_BUNDLE, (error) => {
       if (error) {
         console.log('Error loading the sound', error);
         return;
       }
-      setBGM(sound);
-      startBackgroundMusic();
+      console.log("Sound loaded successfully");
+      bgm.setNumberOfLoops(-1);
+      bgm.setVolume(0.5);
+      bgm.play((success) => {
+        if (success) {
+          console.log('Sound played successfully');
+        } else {
+          console.log('Sound playback failed due to audio decoding errors');
+        }
+      });
     });
     return () => {
       if (bgm) {
         bgm.stop();
         bgm.release();
+        console.log('Sound stopped and released');
       }
     };
   }, []);
-  const startBackgroundMusic = () => {
-    if (bgm) {
-      bgm.setNumberOfLoops(-1); // Loop the music infinitely
-      bgm.setVolume(0.5); // Set volume level (0.0 - 1.0)
-      bgm.play();
-    }
-  };
   return (
     <AppContext.Provider value = {contextVal}>   
     <NavigationContainer>
