@@ -11,7 +11,6 @@ import {
     Alert,
 } from 'react-native';
 import 'react-native-gesture-handler'
-import 'react-native-paper'
 import { CurrentRenderContext, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -116,7 +115,7 @@ const Game = ({navigation}) => {
   };
   const replaceEntry = () => {
     const new_list = context.userList.map(t => {
-      if (t.username === context.username && t.pokemon < score) {
+      if (t.username === context.username && ((t.pokemon < score) || (t.pokemon == score && sec < t.seconds))) {
         return {...context.userList, username: context.username, pokemon: score, seconds: sec}
       }
       return t
@@ -199,6 +198,9 @@ const Username = ({navigation}) => {
     <SafeAreaProvider style = {style.root}>
       <SafeAreaView style = {style.hmImage}>
         <ImageBackground source={bgImage} resizeMode="cover" style={style.hmImage}>
+          <SafeAreaView style = {un.unNoteBox}>
+            <Text style = {un.unNoteText}>If you already entered your name into the Leaderboard, type your username into the box and then press Back to Menu.</Text>
+          </SafeAreaView>
           <SafeAreaView style = {un.unTIBox}>
             <TextInput
               style = {un.unTIText}
@@ -576,6 +578,22 @@ const un = StyleSheet.create({
     left: 20
   },
   unBTMText: {
+    fontFamily: 'pkmndp',
+    fontSize: 30,
+    textAlign: 'center',
+    color: 'black',
+  },
+  unNoteBox: {
+    backgroundColor:'#BDC2C4',
+    width: 350,
+    height: 175,
+    borderRadius: 5,
+    borderColor: 'black',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    bottom: 100
+  },
+  unNoteText: {
     fontFamily: 'pkmndp',
     fontSize: 30,
     textAlign: 'center',
