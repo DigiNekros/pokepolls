@@ -14,7 +14,7 @@ import 'react-native-gesture-handler'
 import { CurrentRenderContext, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import Sound from 'react-native-sound';
+import SoundPlayer from 'react-native-sound';
 import AppContext from './AppContext'
 import { Section } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
@@ -82,6 +82,16 @@ const Game = ({navigation}) => {
   }, []);
   const checkGuess = (guess) => {
     let answers = [...pokenames];
+    const isGuessRepeated = guessList.some((item) => item.name.toLowerCase() === guess.toLowerCase());
+    if (isGuessRepeated) {
+      Alert.alert('Repeated Guess', 'You have already guessed this Pokemon.');
+      return;
+    }
+    const isValidGuess = answers.some((pokemon) => pokemon.name === guess.toLowerCase());
+    if (!isValidGuess) {
+      Alert.alert('Invalid Guess', 'Please enter a valid Pokemon name.');
+      return;
+    }
     answers.forEach(a=> {
       if (a.name === guess.toLowerCase()) {
         guessList.forEach(b => {
@@ -130,9 +140,15 @@ const Game = ({navigation}) => {
   }
   useEffect(() => {
     if (gameActive == false) {
-      Alert.alert("Well done, " + context.username + "!", "You answered " + score + " Pokemon in " + sec + " s!", [{text: "OK", onPress: () => navigation.goBack()}])
+      Alert.alert("Well done, " + context.username + "!", "You answered " + score + " Pokemon in " + formatTime(sec) + "!", [{text: "OK", onPress: () => navigation.goBack()}])
     }
   });
+
+  const formatTime = () => {
+    const minutes = Math.floor(sec / 60);
+    const seconds = sec % 60;
+    return `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+  }
   return (
     <SafeAreaProvider style = {style.root}>
       <SafeAreaView style = {style.hmImage}>
@@ -165,7 +181,7 @@ const Game = ({navigation}) => {
           </SafeAreaView>
           <SafeAreaView style = {game.scoreBox}>
             <Text style = {game.scoreText}>Score: {score}</Text>
-            <Text style = {game.scoreText}>Time: {sec}s</Text>
+            <Text style = {game.scoreText}>Time: {formatTime(sec)}</Text>
           </SafeAreaView>
           <SafeAreaView style = {{flexDirection: "row", alignSelf: "center", top: 25,}}>
             {running == true ? (
@@ -192,7 +208,13 @@ const Game = ({navigation}) => {
 const Username = ({navigation}) => {
   const context = React.useContext(AppContext);
   const createEntry = (username) => {
-    context.setUserList([...context.userList, {username: username, pokemon: 0, seconds: 0}])
+    const userExists = context.userList.some((item) => item.username === username);
+    if (userExists) {
+      Alert.alert('Username Exists', 'This username is already taken. Please choose a different username.');
+    }
+    else {
+      context.setUserList([...context.userList, {username: username, pokemon: 0, seconds: 0}])
+    }
   }
   return (
     <SafeAreaProvider style = {style.root}>
@@ -229,22 +251,40 @@ const Username = ({navigation}) => {
 
 const Leaderboard = ({navigation}) => {
   const context = React.useContext(AppContext);
+  const formatTime = (sec) => {
+    const minutes = Math.floor(sec / 60);
+    const seconds = sec % 60;
+    return `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+  }
+  /*
+  
+   */
   return (
     <SafeAreaProvider style = {style.root}>
       <SafeAreaView style = {style.hmImage}>
         <ImageBackground source={bgImage} resizeMode="cover" style={style.hmImage}>
-          <SafeAreaView style = {{alignSelf: "center"}}>
-          <FlatList
-              style = {{alignSelf: 'center'}}
-              data={context.userList}
-              renderItem={({item}) =>
-                <SafeAreaView style = {leaderboard.entryBox}>
-                  <Text style = {leaderboard.entryText}>{item.username}: {item.pokemon} pokemon guessed</Text>
-                  <Text style = {leaderboard.entryText}>Record: {item.seconds} seconds</Text>
-                </SafeAreaView>
-              }
-            ></FlatList>
-          </SafeAreaView>
+          {context.userList.length === 0 ? 
+            (
+              <SafeAreaView style={leaderboard.noUsersBox}>
+                <Text style={leaderboard.noUsersText}>
+                  Please enter a username to appear on the Leaderboard.
+                </Text>
+              </SafeAreaView>
+            ) : (
+              <SafeAreaView style = {{alignSelf: "center"}}>
+                <FlatList
+                  style = {{alignSelf: 'center'}}
+                  data={context.userList}
+                  renderItem={({item}) =>
+                    <SafeAreaView style = {leaderboard.entryBox}>
+                      <Text style = {leaderboard.entryText}>{item.username}: {item.pokemon} pokemon guessed</Text>
+                      <Text style = {leaderboard.entryText}>Record: {formatTime(item.seconds)}</Text>
+                    </SafeAreaView>
+                  }
+                  ></FlatList>
+              </SafeAreaView>
+            )
+          }
         </ImageBackground>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -273,6 +313,7 @@ const App = () => {
   const [pokenames, setPokenames] = useState([])
   const [username, setUsername] = useState("")
   const [userList, setUserList] = useState([])
+  const [bgm, setBGM] = useState(null)
   // test function to find api
   const FetchDataComponent = () => {
     const [loading, setLoading] = useState(true);
@@ -319,22 +360,31 @@ const App = () => {
     setPokenames,
     FetchDataComponent,
   }
-  const bgMusic = () => {
-    const music = new Sound('home_theme.wav', Sound.MAIN_BUNDLE, (err) => {
-      if (err) {
-        console.log("Can't play music.")
+  useEffect(() => {
+    const sound = new SoundPlayer('home_theme.wav', SoundPlayer.MAIN_BUNDLE, (error) => {
+      if (error) {
+        console.log('Error loading the sound', error);
+        return;
       }
-    })
-    setTimeout(() => {
-      music.play();
-      music.setNumberOfLoops(-1);
+      setBGM(sound);
+      startBackgroundMusic();
     });
-
-    music.release();
-  }
+    return () => {
+      if (bgm) {
+        bgm.stop();
+        bgm.release();
+      }
+    };
+  }, []);
+  const startBackgroundMusic = () => {
+    if (bgm) {
+      bgm.setNumberOfLoops(-1); // Loop the music infinitely
+      bgm.setVolume(0.5); // Set volume level (0.0 - 1.0)
+      bgm.play();
+    }
+  };
   return (
     <AppContext.Provider value = {contextVal}>   
-    {bgMusic()}
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Home'>
         <Stack.Screen name = "Home" component = {Home}></Stack.Screen>
@@ -617,7 +667,22 @@ const leaderboard = StyleSheet.create({
     fontSize: 30,
     textAlign: 'center',
     color: 'black',
-  }
+  },
+  noUsersBox: {
+    backgroundColor:'#BDC2C4',
+    width: 200,
+    height: 125,
+    borderRadius: 5,
+    borderColor: 'black',
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  noUsersText: {
+    fontFamily: 'pkmndp',
+    fontSize: 30,
+    textAlign: 'center',
+    color: 'black',
+  },
 })
 
 export default App;
