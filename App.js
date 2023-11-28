@@ -139,8 +139,11 @@ const Game = ({navigation}) => {
     setGameActive(!gameActive);
   }
   useEffect(() => {
-    if (gameActive == false) {
+    if (gameActive == false && context.username) {
       Alert.alert("Well done, " + context.username + "!", "You answered " + score + " Pokemon in " + formatTime(sec) + "!", [{text: "OK", onPress: () => navigation.goBack()}])
+    }
+    if (gameActive == false && !context.username) {
+      Alert.alert("Well done!", "You answered " + score + " Pokemon in " + formatTime(sec) + "!", [{text: "OK", onPress: () => navigation.goBack()}])
     }
   });
 
@@ -454,7 +457,7 @@ const game = StyleSheet.create ({
     textAlign: 'center',
     fontFamily: 'pkmnrs',
     borderRadius: 5,
-    bottom: 75},
+    bottom: 40},
   gameOffText: {
     fontFamily: 'pkmndp',
     fontSize: 30,
@@ -472,17 +475,17 @@ const game = StyleSheet.create ({
     textAlign: 'center',
     fontFamily: 'pkmnrs',
     borderRadius: 5,
-    bottom: 75
+    bottom: 40
   },
   PABox: {
     backgroundColor:'#BDC2C4',
     width: 300,
-    height: 300,
+    height: 100,
     borderRadius: 10,
     borderColor: 'black',
     justifyContent: 'center',
     alignSelf: 'center',
-    bottom: 25,
+    bottom: 10,
   },
   PATitle: {
     fontFamily: 'pkmndp',
@@ -504,7 +507,7 @@ const game = StyleSheet.create ({
     borderColor: 'black',
     justifyContent: 'center',
     alignSelf: 'center',
-    bottom: 50
+    bottom: 25
   },
   submitText: {
     fontFamily: 'pkmndp',
